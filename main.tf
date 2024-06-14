@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 variable "prefix" {
-  default = "tfvmultra"
+  default = "tfvmprj"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -54,11 +54,11 @@ resource "azurerm_storage_queue" "que" {
   storage_account_name = azurerm_storage_account.sg.name
 }
 
-resource "azurerm_sql_database" "ultragenyxsqldb" {
-  name                = "ultragenyx"
+resource "azurerm_sql_database" "projectsqldb" {
+  name                = "project"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  server_name         = azurerm_sql_server.ultragensql.name
+  server_name         = azurerm_sql_server.prjgensql.name
   
   tags = {
     environment = "staging"
@@ -66,7 +66,7 @@ resource "azurerm_sql_database" "ultragenyxsqldb" {
 }
 
 resource "azurerm_mssql_server_extended_auditing_policy" "sqlDbServerAuditingPolicy" {
-  server_id                               = azurerm_sql_server.ultragensql.id
+  server_id                               = azurerm_sql_server.prjgensql.id
   storage_endpoint                        = azurerm_storage_account.sg.primary_blob_endpoint
   storage_account_access_key              = azurerm_storage_account.sg.primary_access_key
   storage_account_access_key_is_secondary = true
@@ -80,7 +80,7 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-resource "azurerm_public_ip" "ultragenip" {
+resource "azurerm_public_ip" "prjgenip" {
   name                = "${var.prefix}-public-ip"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -103,7 +103,7 @@ resource "azurerm_network_interface" "main" {
     name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.ultragenip.id
+    public_ip_address_id = azurerm_public_ip.prjgenip.id
   }
 }
 
